@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA Fine Jewelry</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Montserrat,sans-serif;
+background:#0e0e0e;
+color:white;
+overflow-x:hidden;
+}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 40px;
+background:#111;
+position:sticky;
+top:0;
+z-index:100;
+border-bottom:1px solid rgba(212,175,55,.2);
+}
+
+.logo{
+font-family:'Playfair Display',serif;
+font-size:24px;
+color:#D4AF37;
+font-weight:bold;
+letter-spacing:2px;
+}
+
+.nav span{
+margin:0 12px;
+cursor:pointer;
+transition:.3s;
+}
+
+.nav span:hover{
+color:#D4AF37;
+}
+
+.page{
+display:none;
+padding:30px;
+}
+
+.active{
+display:block;
+}
+
+.hero{
+height:85vh;
+background:url("https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=1600&q=80") center/cover;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+position:relative;
+}
+
+.hero::before{
+content:'';
+position:absolute;
+inset:0;
+background:rgba(0,0,0,.65);
+}
+
+.hero-content{
+position:relative;
+z-index:2;
+}
+
+.hero h1{
+font-size:60px;
+font-family:'Playfair Display',serif;
+color:#D4AF37;
+margin-bottom:15px;
+}
+
+.hero p{
+color:#ddd;
+margin-bottom:20px;
+}
+
+.btn{
+background:linear-gradient(135deg,#D4AF37,#E5C76B);
+border:none;
+padding:12px 22px;
+cursor:pointer;
+font-weight:600;
+border-radius:6px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+margin-top:25px;
+}
+
+.card{
+background:#1a1a1a;
+padding:15px;
+border-radius:12px;
+text-align:center;
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card img{
+width:100%;
+height:260px;
+object-fit:cover;
+border-radius:10px;
+}
+
+.card h3{
+margin-top:12px;
+font-family:'Playfair Display',serif;
+}
+
+.price{
+color:#D4AF37;
+font-weight:bold;
+margin:10px 0;
+}
+
+.card button{
+margin:4px;
+}
+
+.item{
+display:flex;
+justify-content:space-between;
+padding:12px 0;
+border-bottom:1px solid #333;
+}
+
+.gold{
+color:#D4AF37;
+}
+
+#cartItems{
+margin-top:20px;
+}
+
+@media(max-width:768px){
+
+header{
+flex-direction:column;
+gap:10px;
+}
+
+.hero h1{
+font-size:38px;
+}
+
+.page{
+padding:20px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">AURA</div>
+
+<div class="nav">
+<span onclick="showPage('home')">Home</span>
+<span onclick="showPage('shop')">Shop</span>
+<span onclick="showPage('cart')">Cart (<span id="cartCount">0</span>)</span>
+</div>
+
+</header>
+
+<!-- HOME -->
+
+<div id="home" class="page active">
+
+<div class="hero">
+<div class="hero-content">
+<h1>AURA: TIMELESS RADIANCE</h1>
+<p>Luxury Jewelry Crafted For Every Moment</p>
+
+<button class="btn" onclick="showPage('shop')">
+Shop Collection
+</button>
+
+</div>
+</div>
+
+</div>
+
+<!-- SHOP -->
+
+<div id="shop" class="page">
+
+<h2>Luxury Collection</h2>
+
+<div id="productGrid" class="grid"></div>
+
+</div>
+
+<!-- CART -->
+
+<div id="cart" class="page">
+
+<h2>Your Cart</h2>
+
+<div id="cartItems"></div>
+
+<br>
+
+<h3 class="gold">
+Total: ₹<span id="cartTotal">0</span>
+</h3>
+
+<br>
+
+<button class="btn" onclick="checkout()">
+Pay Now
+</button>
+
+</div>
+
+<script>
+
+const products = [
+
+{
+name:"Imperial Diamond Ring",
+price:120000,
+image:"https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Royal Gold Necklace",
+price:95000,
+image:"https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Diamond Tennis Bracelet",
+price:110000,
+image:"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Luxury Diamond Earrings",
+price:85000,
+image:"https://images.unsplash.com/photo-1588444837495-c6cfeb53f32d?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Celestial Pearl Earrings",
+price:65000,
+image:"https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Emerald Royal Ring",
+price:135000,
+image:"https://images.unsplash.com/photo-1603561591411-07134e71a2d0?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Platinum Infinity Band",
+price:150000,
+image:"https://images.unsplash.com/photo-1600721391689-2564bb8055de?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Luxury Sapphire Necklace",
+price:210000,
+image:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Rose Gold Engagement Ring",
+price:105000,
+image:"https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Classic Solitaire Ring",
+price:90000,
+image:"https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Diamond Choker Set",
+price:250000,
+image:"https://images.unsplash.com/photo-1600721391776-4a7b8b5a0f8f?auto=format&fit=crop&w=800&q=80"
+},
+
+{
+name:"Luxury Bridal Set",
+price:320000,
+image:"https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=80"
+}
+
+];
+
+let cart = [];
+
+function showPage(page){
+
+document.querySelectorAll('.page')
+.forEach(p=>p.classList.remove('active'));
+
+document.getElementById(page)
+.classList.add('active');
+}
+
+function renderProducts(){
+
+const grid=document.getElementById('productGrid');
+
+grid.innerHTML=products.map(product=>`
+
+<div class="card">
+
+<img src="${product.image}" alt="${product.name}">
+
+<h3>${product.name}</h3>
+
+<p class="price">
+₹${product.price.toLocaleString()}
+</p>
+
+<button class="btn"
+onclick="addToCart(${products.indexOf(product)})">
+Add To Cart
+</button>
+
+<button class="btn"
+onclick="buyNow('${product.name}')">
+Buy Now
+</button>
+
+</div>
+
+`).join('');
+
+}
+
+function addToCart(index){
+
+cart.push(products[index]);
+
+updateCart();
+
+}
+
+function updateCart(){
+
+document.getElementById('cartCount').innerText=cart.length;
+
+const cartItems=document.getElementById('cartItems');
+
+let total=0;
+
+cartItems.innerHTML=cart.map(item=>{
+
+total+=item.price;
+
+return `
+<div class="item">
+<span>${item.name}</span>
+<span>₹${item.price.toLocaleString()}</span>
+</div>
+`;
+
+}).join('');
+
+document.getElementById('cartTotal')
+.innerText=total.toLocaleString();
+
+}
+
+function buyNow(name){
+
+alert(
+"Proceeding to checkout for " + name
+);
+
+}
+
+function checkout(){
+
+if(cart.length===0){
+
+alert("Your cart is empty.");
+
+return;
+
+}
+
+alert("Payment Successful ✨");
+
+cart=[];
+
+updateCart();
+
+}
+
+renderProducts();
+
+</script>
+
+</body>
+</html>
